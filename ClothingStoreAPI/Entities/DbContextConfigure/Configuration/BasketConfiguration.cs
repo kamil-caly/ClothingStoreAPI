@@ -7,7 +7,9 @@ namespace ClothingStoreAPI.Entities.DbContextConfigure.Configuration
     {
         public void Configure(EntityTypeBuilder<Basket> builder)
         {
-            throw new NotImplementedException();
+            builder.HasMany(b => b.Orders)
+                .WithOne(o => o.Basket)
+                .HasForeignKey(o => o.BasketId);
         }
     }
 }

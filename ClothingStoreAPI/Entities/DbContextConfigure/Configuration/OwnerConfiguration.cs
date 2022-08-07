@@ -7,7 +7,11 @@ namespace ClothingStoreAPI.Entities.DbContextConfigure.Configuration
     {
         public void Configure(EntityTypeBuilder<Owner> builder)
         {
-            throw new NotImplementedException();
+            builder.Property(o => o.ContactEmail)
+                .IsRequired();
+
+            builder.Property(o => o.ContactEmail)
+                .IsRequired();
         }
     }
 }

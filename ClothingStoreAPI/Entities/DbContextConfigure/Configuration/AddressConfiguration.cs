@@ -7,7 +7,14 @@ namespace ClothingStoreAPI.Entities.DbContextConfigure.Configuration
     {
         public void Configure(EntityTypeBuilder<Address> builder)
         {
-            throw new NotImplementedException();
+            builder.Property(a => a.Country)
+                .IsRequired();
+
+            builder.Property(a => a.City)
+                .IsRequired();
+
+            builder.Property(a => a.Street)
+                .IsRequired();
         }
     }
 }

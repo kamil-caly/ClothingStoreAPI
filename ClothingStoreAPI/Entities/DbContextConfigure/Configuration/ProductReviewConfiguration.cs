@@ -7,7 +7,8 @@ namespace ClothingStoreAPI.Entities.DbContextConfigure.Configuration
     {
         public void Configure(EntityTypeBuilder<ProductReview> builder)
         {
-            throw new NotImplementedException();
+            builder.Property(r => r.Rating)
+                .IsRequired();
         }
     }
 }

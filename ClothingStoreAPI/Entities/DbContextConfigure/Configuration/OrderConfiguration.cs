@@ -7,7 +7,24 @@ namespace ClothingStoreAPI.Entities.DbContextConfigure.Configuration
     {
         public void Configure(EntityTypeBuilder<Order> builder)
         {
-            throw new NotImplementedException();
+            builder.Property(o => o.IsBought)
+                .HasDefaultValue(false);
+
+            builder.Property(o => o.CreatedOrderDate)
+                .HasDefaultValueSql("getutcdate()");
+
+            builder.Property(o => o.ProductName)
+                .IsRequired();
+
+            builder.Property(o => o.ProductPrice)
+               .IsRequired();
+
+            builder.Property(o => o.ProductSize)
+               .IsRequired();
+
+            builder.Property(o => o.ProductGender)
+               .IsRequired();
+
         }
     }
 }

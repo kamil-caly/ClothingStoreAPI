@@ -3,11 +3,12 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ClothingStoreAPI.Entities.DbContextConfigure.Configuration
 {
-    public class StoreReviewsConfiguration : IEntityTypeConfiguration<Owner>
+    public class StoreReviewsConfiguration : IEntityTypeConfiguration<StoreReview>
     {
-        public void Configure(EntityTypeBuilder<Owner> builder)
+        public void Configure(EntityTypeBuilder<StoreReview> builder)
         {
-            throw new NotImplementedException();
+            builder.Property(r => r.Rating)
+               .IsRequired();
         }
     }
 }

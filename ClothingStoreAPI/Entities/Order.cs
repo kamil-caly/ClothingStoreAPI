@@ -11,7 +11,7 @@
         public string ProductGender { get; set; }
         public bool IsBought { get; set; }
         public virtual Basket Basket { get; set; }
-        public int BasektId { get; set; }
+        public int BasketId { get; set; }
 
     }
 }
