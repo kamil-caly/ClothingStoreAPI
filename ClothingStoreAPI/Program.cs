@@ -1,3 +1,7 @@
+using ClothingStoreAPI.Entities.DbContextConfigure;
+using ClothingStoreAPI.Seeders;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -7,7 +11,17 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddDbContext<ClothingStoreDbContext>(option =>
+{
+    option.UseSqlServer(builder.Configuration.GetConnectionString("MyConnection"));
+});
+builder.Services.AddScoped<ClothingStoreSeeder>();
+
 var app = builder.Build();
+
+var scope = app.Services.CreateScope();
+var seeder = scope.ServiceProvider.GetRequiredService<ClothingStoreSeeder>();
+seeder.Seed();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

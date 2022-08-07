@@ -17,6 +17,7 @@ namespace ClothingStoreAPI.Entities.DbContextConfigure.Configuration
                 .IsRequired();
 
             builder.Property(o => o.ProductPrice)
+               .HasPrecision(5, 2)
                .IsRequired();
 
             builder.Property(o => o.ProductSize)

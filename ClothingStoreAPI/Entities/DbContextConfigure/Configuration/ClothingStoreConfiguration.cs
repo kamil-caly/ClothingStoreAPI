@@ -17,7 +17,7 @@ namespace ClothingStoreAPI.Entities.DbContextConfigure.Configuration
                  .HasDefaultValueSql("getutcdate()");
 
             builder.Property(s => s.Incame)
-                 .HasColumnType("decimal(15,2)");
+                 .HasColumnType("decimal(17,2)");
 
             builder.Property(s => s.ContactNumber)
                  .IsRequired();

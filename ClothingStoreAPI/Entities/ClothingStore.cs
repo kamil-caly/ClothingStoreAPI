@@ -9,7 +9,7 @@
         public string ContactEmail { get; set; }
         public string Headquaters { get; set; }
         public DateTime CreatedDate { get; set; }
-        public decimal Incame { get; set; }
+        public decimal? Incame { get; set; }
         public virtual Address Address { get; set; }
         public int AddressId { get; set; }
         public virtual Owner Owner { get; set; }

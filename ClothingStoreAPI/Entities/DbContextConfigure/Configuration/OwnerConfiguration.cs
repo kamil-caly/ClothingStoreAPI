@@ -10,7 +10,7 @@ namespace ClothingStoreAPI.Entities.DbContextConfigure.Configuration
             builder.Property(o => o.ContactEmail)
                 .IsRequired();
 
-            builder.Property(o => o.ContactEmail)
+            builder.Property(o => o.ContactNumber)
                 .IsRequired();
         }
     }
