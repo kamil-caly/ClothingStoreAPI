@@ -16,6 +16,7 @@ namespace ClothingStoreAPI.Services
         ClothingStoreDto GetById(int id);
         public void Delete(int id);
         public void Update(UpdateClothingStoreDto dto, int id);
+        ClothingStore GetStoreFromDb(int id);
     }
     public class ClothingStoreService : IClothingStoreService
     {
@@ -39,7 +40,7 @@ namespace ClothingStoreAPI.Services
 
         public void Delete(int id)
         {
-            var store = this.GetStoreById(id);
+            var store = this.GetStoreFromDb(id);
             dbContext.ClothingStores.Remove(store);
             dbContext.SaveChanges();
         }
@@ -56,7 +57,7 @@ namespace ClothingStoreAPI.Services
 
             if(stores is null)
             {
-                throw new NotFoundAnyStoresException("Cannot found any clothing stores");
+                throw new NotFoundAnyItemException("Cannot found any clothing stores");
             }
 
             var result = mapper.Map<List<ClothingStoreDto>>(stores);
@@ -65,20 +66,20 @@ namespace ClothingStoreAPI.Services
 
         public ClothingStoreDto GetById(int id)
         {
-            var store = this.GetStoreById(id);
+            var store = this.GetStoreFromDb(id);
             var restult = mapper.Map<ClothingStoreDto>(store);
             return restult;
         }
 
         public void Update(UpdateClothingStoreDto dto, int id)
         {
-            var store = this.GetStoreById(id);
+            var store = this.GetStoreFromDb(id);
 
             store = mapper.Map(dto, store);
             dbContext.SaveChanges();
         }
 
-        private ClothingStore GetStoreById(int id)
+        public ClothingStore GetStoreFromDb(int id)
         {
             var store = dbContext
                 .ClothingStores
@@ -90,7 +91,7 @@ namespace ClothingStoreAPI.Services
 
             if (store is null)
             {
-                throw new NotFoundStoreException("Store not found");
+                throw new NotFoundException("Store not found");
             }
 
             return store;

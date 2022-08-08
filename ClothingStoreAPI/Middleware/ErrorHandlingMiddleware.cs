@@ -10,12 +10,12 @@ namespace ClothingStoreAPI.Middleware
             {
                 await next.Invoke(context);
             }
-            catch(NotFoundStoreException notFoundStore)
+            catch(NotFoundException notFoundStore)
             {
                 context.Response.StatusCode = 404;
                 await context.Response.WriteAsync(notFoundStore.Message);
             }
-            catch (NotFoundAnyStoresException notFoundAnyStores)
+            catch (NotFoundAnyItemException notFoundAnyStores)
             {
                 context.Response.StatusCode = 404;
                 await context.Response.WriteAsync(notFoundAnyStores.Message);

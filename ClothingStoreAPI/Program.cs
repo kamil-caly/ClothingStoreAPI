@@ -22,6 +22,7 @@ builder.Services.AddScoped<ClothingStoreSeeder>();
 builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 builder.Services.AddScoped<ErrorHandlingMiddleware>();
 builder.Services.AddScoped<IClothingStoreService, ClothingStoreService>();
+builder.Services.AddScoped<IStoreReviewService, StoreReviewService>();
 
 var app = builder.Build();
 
