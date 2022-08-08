@@ -1,4 +1,8 @@
 ﻿using ClothingStoreAPI.Entities;
+using ClothingStoreAPI.Services;
+using ClothingStoreModels.Dtos;
+using ClothingStoreModels.Dtos.Dispaly;
+using ClothingStoreModels.Dtos.Update;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ClothingStoreAPI.Controllers
@@ -7,9 +11,9 @@ namespace ClothingStoreAPI.Controllers
     [ApiController]
     public class ClothingStoreController : ControllerBase
     {
-        private readonly IStoreService storeService;
+        private readonly IClothingStoreService storeService;
 
-        public ClothingStoreController(IStoreService storeService)
+        public ClothingStoreController(IClothingStoreService storeService)
         {
             this.storeService = storeService;
         }
@@ -17,9 +21,41 @@ namespace ClothingStoreAPI.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<ClothingStoreDto>> GetAll()
         {
-            var StoreDtos = storeService.GetAll();
+            var storeDtos = storeService.GetAll();
 
-            return Ok(StoreDtos);
+            return Ok(storeDtos);
+        }
+
+        [HttpGet("{id}")]
+        public ActionResult<ClothingStoreDto> Get([FromRoute] int id)
+        {
+            var storeDto = storeService.GetById(id);
+
+            return Ok(storeDto);
+        }
+
+        [HttpPost]
+        public ActionResult CreateStore([FromBody] CreateClothingStoreDto dto)
+        {
+            var id = storeService.Create(dto);
+
+            return Created($"/api/ClothingStore/{id}", null);
+        }
+
+        [HttpDelete("{id}")]
+        public ActionResult DeleteStore([FromRoute] int id)
+        {
+            storeService.Delete(id);
+
+            return NoContent();
+        }
+
+        [HttpPut("{id}")]
+        public ActionResult UpdateStore([FromRoute] int id, [FromBody] UpdateClothingStoreDto dto)
+        {
+            storeService.Update(dto, id);
+
+            return Ok();
         }
     }
 }

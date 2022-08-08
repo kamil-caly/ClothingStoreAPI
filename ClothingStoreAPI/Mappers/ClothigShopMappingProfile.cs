@@ -3,6 +3,7 @@ using ClothingStoreAPI.Entities;
 using ClothingStoreModels.Dtos;
 using ClothingStoreModels.Dtos.Create;
 using ClothingStoreModels.Dtos.Dispaly;
+using ClothingStoreModels.Dtos.Update;
 
 namespace ClothingStoreAPI.Mappers
 {
@@ -39,7 +40,13 @@ namespace ClothingStoreAPI.Mappers
             CreateMap<CreateStoreReviewDto, StoreReview>();
             CreateMap<CreateProductDto, Product>();
             CreateMap<CreateProductReviewDto, ProductReview>();
-           
+
+            CreateMap<UpdateClothingStoreDto, ClothingStore>();
+            CreateMap<UpdateStoreReviewDto, StoreReview>();
+            CreateMap<UpdateProductDto, Product>();
+            CreateMap<UpdateProductReviewDto, ProductReview>();
+
+
         }
     }
 }

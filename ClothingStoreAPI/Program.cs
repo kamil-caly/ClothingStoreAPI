@@ -1,6 +1,9 @@
 using ClothingStoreAPI.Entities.DbContextConfigure;
+using ClothingStoreAPI.Middleware;
 using ClothingStoreAPI.Seeders;
+using ClothingStoreAPI.Services;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +19,9 @@ builder.Services.AddDbContext<ClothingStoreDbContext>(option =>
     option.UseSqlServer(builder.Configuration.GetConnectionString("MyConnection"));
 });
 builder.Services.AddScoped<ClothingStoreSeeder>();
+builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+builder.Services.AddScoped<ErrorHandlingMiddleware>();
+builder.Services.AddScoped<IClothingStoreService, ClothingStoreService>();
 
 var app = builder.Build();
 
@@ -29,6 +35,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseMiddleware<ErrorHandlingMiddleware>();
 
 app.UseHttpsRedirection();
 

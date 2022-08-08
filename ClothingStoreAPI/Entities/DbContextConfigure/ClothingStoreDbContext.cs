@@ -7,7 +7,7 @@ namespace ClothingStoreAPI.Entities.DbContextConfigure
         public ClothingStoreDbContext(DbContextOptions<ClothingStoreDbContext> options)
             : base(options) { }
         
-        public DbSet<Owner> ClothingStores { get; set; }
+        public DbSet<ClothingStore> ClothingStores { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Owner> Owners { get; set; }
         public DbSet<StoreReview> StoreReviews { get; set; }
