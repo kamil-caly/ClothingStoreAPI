@@ -23,6 +23,8 @@ builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
 builder.Services.AddScoped<ErrorHandlingMiddleware>();
 builder.Services.AddScoped<IClothingStoreService, ClothingStoreService>();
 builder.Services.AddScoped<IStoreReviewService, StoreReviewService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IProductReviewService, ProductReviewService>();
 
 var app = builder.Build();
 
