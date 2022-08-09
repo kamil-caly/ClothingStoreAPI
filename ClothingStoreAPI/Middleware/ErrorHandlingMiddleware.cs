@@ -4,6 +4,12 @@ namespace ClothingStoreAPI.Middleware
 {
     public class ErrorHandlingMiddleware : IMiddleware
     {
+        private readonly ILogger logger;
+
+        public ErrorHandlingMiddleware(ILogger<ErrorHandlingMiddleware> logger)
+        {
+            this.logger = logger;
+        }
         public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
             try
@@ -15,15 +21,16 @@ namespace ClothingStoreAPI.Middleware
                 context.Response.StatusCode = 404;
                 await context.Response.WriteAsync(notFoundStore.Message);
             }
-            catch (NotFoundAnyItemException notFoundAnyStores)
+            catch(NotFoundAnyItemException notFoundAnyStores)
             {
                 context.Response.StatusCode = 404;
                 await context.Response.WriteAsync(notFoundAnyStores.Message);
             }
-            catch (Exception)
+            catch(Exception ex)
             {
                 context.Response.StatusCode = 500;
                 await context.Response.WriteAsync("Unexpected exception");
+                logger.LogError(ex, ex.Message);
             }
         }
     }

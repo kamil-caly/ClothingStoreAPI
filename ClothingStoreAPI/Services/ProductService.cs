@@ -2,6 +2,7 @@
 using ClothingStoreAPI.Entities;
 using ClothingStoreAPI.Entities.DbContextConfigure;
 using ClothingStoreAPI.Exceptions;
+using ClothingStoreAPI.Services.Interfaces;
 using ClothingStoreModels.Dtos;
 using ClothingStoreModels.Dtos.Dispaly;
 using ClothingStoreModels.Dtos.Update;
@@ -9,28 +10,23 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ClothingStoreAPI.Services
 {
-    public interface IProductService
-    {
-        IEnumerable<ProductDto> GetAll(int storeId);
-        ProductDto GetById(int storeId, int productId);
-        int Create(int storeId, CreateProductDto dto);
-
-        void Update(int storeId, int productId, UpdateProductDto dto);
-        void DeleteAll(int storeId);
-        void Delete(int storeId, int productId);
-        Product GetProductById(int productId, int storeId);
-    }
+   
     public class ProductService : IProductService
     {
         private readonly ClothingStoreDbContext dbContext;
         private readonly IMapper mapper;
         private readonly IClothingStoreService storeService;
+        private readonly ILogger<ProductService> logger;
 
-        public ProductService(ClothingStoreDbContext dbContext, IMapper mapper, IClothingStoreService storeService)
+        public ProductService(ClothingStoreDbContext dbContext,
+            IMapper mapper,
+            IClothingStoreService storeService,
+            ILogger<ProductService> logger)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
             this.storeService = storeService;
+            this.logger = logger;
         }
 
         public int Create(int storeId, CreateProductDto dto)
@@ -48,6 +44,8 @@ namespace ClothingStoreAPI.Services
 
         public void Delete(int storeId, int productId)
         {
+            logger.LogError($"Product with id: {productId} from store with id: {storeId} DELETE ACTION invoked");
+
             var product = this.GetProductById(productId, storeId);
 
             dbContext.Products.Remove(product);
@@ -56,6 +54,8 @@ namespace ClothingStoreAPI.Services
 
         public void DeleteAll(int storeId)
         {
+            logger.LogError($"All products from store with id: {storeId} DELETEALL ACTION invoked");
+
             var store = storeService.GetStoreFromDb(storeId);
 
             var products = dbContext

@@ -1,4 +1,5 @@
 ﻿using ClothingStoreAPI.Services;
+using ClothingStoreAPI.Services.Interfaces;
 using ClothingStoreModels.Dtos.Create;
 using ClothingStoreModels.Dtos.Dispaly;
 using ClothingStoreModels.Dtos.Update;

@@ -4,6 +4,7 @@ using ClothingStoreAPI.Entities.DbContextConfigure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ClothingStoreAPI.Migrations
 {
     [DbContext(typeof(ClothingStoreDbContext))]
-    partial class ClothingStoreDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220809101946_UserAndRoleAdded")]
+    partial class UserAndRoleAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

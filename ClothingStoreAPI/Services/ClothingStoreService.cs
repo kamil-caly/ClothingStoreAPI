@@ -2,6 +2,7 @@
 using ClothingStoreAPI.Entities;
 using ClothingStoreAPI.Entities.DbContextConfigure;
 using ClothingStoreAPI.Exceptions;
+using ClothingStoreAPI.Services.Interfaces;
 using ClothingStoreModels.Dtos;
 using ClothingStoreModels.Dtos.Dispaly;
 using ClothingStoreModels.Dtos.Update;
@@ -9,24 +10,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ClothingStoreAPI.Services
 {
-    public interface IClothingStoreService
-    {
-        int Create(CreateClothingStoreDto dto);
-        IEnumerable<ClothingStoreDto> GetAll();
-        ClothingStoreDto GetById(int id);
-        public void Delete(int id);
-        public void Update(UpdateClothingStoreDto dto, int id);
-        ClothingStore GetStoreFromDb(int id);
-    }
     public class ClothingStoreService : IClothingStoreService
     {
         private readonly ClothingStoreDbContext dbContext;
         private readonly IMapper mapper;
+        private readonly ILogger<ClothingStoreService> logger;
 
-        public ClothingStoreService(ClothingStoreDbContext dbContext, IMapper mapper)
+        public ClothingStoreService(ClothingStoreDbContext dbContext, IMapper mapper, ILogger<ClothingStoreService> logger)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
+            this.logger = logger;
         }
 
         public int Create(CreateClothingStoreDto dto)
@@ -40,6 +34,8 @@ namespace ClothingStoreAPI.Services
 
         public void Delete(int id)
         {
+            logger.LogError($"Clothing Store with id: {id} DELETE ACTION invoked");
+
             var store = this.GetStoreFromDb(id);
             dbContext.ClothingStores.Remove(store);
             dbContext.SaveChanges();
