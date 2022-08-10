@@ -82,7 +82,7 @@ builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
 builder.Services.AddScoped<IValidator<LoginUserDto>, LoginUserDtoValidator>();
 builder.Services.AddScoped<IValidator<DeleteUserDto>, DeleteUserDtoValidator>();
-builder.Services.AddScoped<IValidator<int>, AddMoneyToUserValidator>();
+builder.Services.AddScoped<IValidator<AddUserMoney>, AddMoneyToUserValidator>();
 builder.Services.AddScoped<IValidator<HttpQuery>, StoreQueryValidator>();
 builder.Services.AddScoped<IValidator<HttpQuery>, ProductQueryValidator>();
 builder.Services.AddScoped<IUserContextService, UserContextService>();

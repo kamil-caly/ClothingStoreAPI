@@ -43,7 +43,54 @@ namespace ClothingStoreAPI.Services
             var orderDto = mapper.Map<CreateOrderDto>(product);
             orderDto.ProductQuantity = quantity;
 
-            basketService.AddToBasket(orderDto);
+            basketService.AddToBasket(orderDto, product.Id);
+        }
+
+        public void BuyOrder(int orderId)
+        {
+            var basket = basketService.GetExistingUserBasket();
+
+            var order = dbContext
+                .Orders
+                .Where(o => o.BasketId == basket.Id)
+                .FirstOrDefault(o => o.Id == orderId);
+
+            if (order is null)
+            {
+                throw new NotFoundException("Order not found");
+            }
+
+            if (order.IsBought == true)
+            {
+                throw new CannotBuyProductException("The order has already been completed.");
+            }
+
+            var productInStore = dbContext
+                .Products
+                .FirstOrDefault(p => p.Id == order.ProductId);
+
+            if (productInStore is null)
+            {
+                throw new NotFoundException("Product in Clothing store not found");
+            }
+
+            var productInStoreQuantity = productInStore.Quantity;
+
+            var user = dbContext.Users.FirstOrDefault(u => u.Id == userContextService.GetUserId);
+
+            var userMoney = user.Money;
+
+            if (order.ProductQuantity > productInStoreQuantity
+                || userMoney < order.ProductQuantity * order.ProductPrice)
+            {
+                throw new CannotBuyProductException("Cannot buy because product quantity is less than in order" +
+                    "or you hav not enaught money.");
+            }
+
+            order.IsBought = true;
+            user.Money -= order.ProductQuantity * order.ProductPrice;
+            productInStore.Quantity -= order.ProductQuantity;
+            dbContext.SaveChanges();
         }
 
         public void DeleteOrder(int orderId)

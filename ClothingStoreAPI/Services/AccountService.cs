@@ -2,6 +2,7 @@
 using ClothingStoreAPI.Entities;
 using ClothingStoreAPI.Entities.DbContextConfigure;
 using ClothingStoreAPI.Services.Interfaces;
+using ClothingStoreModels.Dtos;
 using ClothingStoreModels.Dtos.Create;
 using ClothingStoreModels.Dtos.Delete;
 using Microsoft.AspNetCore.Identity;
@@ -29,11 +30,11 @@ namespace ClothingStoreAPI.Services
             this.userContextService = userContextService;
         }
 
-        public void AddMoney(int money, LoginUserDto dto)
+        public void AddMoney(AddUserMoney moneyParams)
         {
             var user = dbContext.Users.FirstOrDefault(u => u.Id == userContextService.GetUserId);
 
-            user.Money += (decimal)money;
+            user.Money += (decimal)moneyParams.Money;
             dbContext.SaveChanges();
         }
 

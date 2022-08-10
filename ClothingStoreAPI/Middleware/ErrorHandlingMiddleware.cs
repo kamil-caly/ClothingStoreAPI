@@ -16,6 +16,11 @@ namespace ClothingStoreAPI.Middleware
             {
                 await next.Invoke(context);
             }
+            catch (CannotBuyProductException cannotBuy)
+            {
+                context.Response.StatusCode = 406; //niedozwolony zasob
+                await context.Response.WriteAsync(cannotBuy.Message);
+            }
             catch (TooLittleMoneyException littleMoney)
             {
                 context.Response.StatusCode = 204;

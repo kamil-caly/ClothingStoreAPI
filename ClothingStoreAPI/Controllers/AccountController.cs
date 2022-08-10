@@ -1,4 +1,5 @@
 ﻿using ClothingStoreAPI.Services.Interfaces;
+using ClothingStoreModels.Dtos;
 using ClothingStoreModels.Dtos.Create;
 using ClothingStoreModels.Dtos.Delete;
 using Microsoft.AspNetCore.Mvc;
@@ -40,10 +41,10 @@ namespace ClothingStoreAPI.Controllers
             return NoContent();
         }
 
-        [HttpPost("addMoney/{money}")]
-        public ActionResult AddMoney([FromRoute] int money, [FromBody] LoginUserDto dto)
+        [HttpPost("addMoney")]
+        public ActionResult AddMoney([FromBody] AddUserMoney userMoneyParams)
         {
-            accountService.AddMoney(money, dto);
+            accountService.AddMoney(userMoneyParams);
 
             return Ok();
         }

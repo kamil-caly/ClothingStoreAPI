@@ -31,5 +31,13 @@ namespace ClothingStoreAPI.Controllers
 
             return NoContent();
         }
+
+        [HttpPut("buyOrder/{orderId}")]
+        public ActionResult BuyOrder([FromRoute] int orderId)
+        {
+            orderService.BuyOrder(orderId);
+
+            return Ok();
+        }
     }
 }

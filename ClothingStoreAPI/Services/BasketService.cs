@@ -27,14 +27,15 @@ namespace ClothingStoreAPI.Services
             this.productService = productService;
         }
 
-        public void AddToBasket(CreateOrderDto dto)
+        public void AddToBasket(CreateOrderDto dto, int productId)
         {
             var basket = this.GetOrCreateUserBasket();
 
             var newOrder = mapper.Map<Order>(dto);
             newOrder.BasketId = basket.Id;
+            newOrder.ProductId = productId;
+
             dbContext.Orders.Add(newOrder);
-            
             dbContext.SaveChanges();
         }
 

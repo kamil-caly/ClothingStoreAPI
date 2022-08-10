@@ -1,4 +1,5 @@
-﻿using ClothingStoreModels.Dtos.Create;
+﻿using ClothingStoreModels.Dtos;
+using ClothingStoreModels.Dtos.Create;
 using ClothingStoreModels.Dtos.Delete;
 
 namespace ClothingStoreAPI.Services.Interfaces
@@ -9,6 +10,6 @@ namespace ClothingStoreAPI.Services.Interfaces
         string GenerateJwt(LoginUserDto dto);
         void DeleteUser(DeleteUserDto dto);
 
-        void AddMoney(int money, LoginUserDto dto);
+        void AddMoney(AddUserMoney userMoneyParams);
     }
 }
