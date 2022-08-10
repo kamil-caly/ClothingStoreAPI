@@ -8,6 +8,8 @@ namespace ClothingStoreAPI.Entities
         public string Comment { get; set; }
         [Range(1,5)]
         public int Rating { get; set; }
+        public virtual User CreatedBy { get; set; }
+        public int? CreatedById { get; set; }
         public virtual ClothingStore Store { get; set; }
         public int StoreId { get; set; }
     }

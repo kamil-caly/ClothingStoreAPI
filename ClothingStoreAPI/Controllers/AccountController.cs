@@ -19,7 +19,7 @@ namespace ClothingStoreAPI.Controllers
         public ActionResult RegisterUser([FromBody] RegisterUserDto dto)
         {
             accountService.RegisterUser(dto);
-
+            
             return Ok();
         }
 

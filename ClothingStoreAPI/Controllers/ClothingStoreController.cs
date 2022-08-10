@@ -4,12 +4,15 @@ using ClothingStoreAPI.Services.Interfaces;
 using ClothingStoreModels.Dtos;
 using ClothingStoreModels.Dtos.Dispaly;
 using ClothingStoreModels.Dtos.Update;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace ClothingStoreAPI.Controllers
 {
     [Route("api/ClothingStore")]
     [ApiController]
+    [Authorize]
     public class ClothingStoreController : ControllerBase
     {
         private readonly IClothingStoreService storeService;
@@ -20,14 +23,16 @@ namespace ClothingStoreAPI.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<ClothingStoreDto>> GetAll()
+        [AllowAnonymous]
+        public ActionResult<IEnumerable<ClothingStoreDto>> GetAll([FromQuery] string searchPhraze)
         {
-            var storeDtos = storeService.GetAll();
+            var storeDtos = storeService.GetAll(searchPhraze);
 
             return Ok(storeDtos);
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public ActionResult<ClothingStoreDto> Get([FromRoute] int id)
         {
             var storeDto = storeService.GetById(id);
@@ -35,6 +40,7 @@ namespace ClothingStoreAPI.Controllers
             return Ok(storeDto);
         }
 
+        [Authorize(Roles = "Admin,Manager")]
         [HttpPost]
         public ActionResult CreateStore([FromBody] CreateClothingStoreDto dto)
         {
@@ -43,6 +49,7 @@ namespace ClothingStoreAPI.Controllers
             return Created($"/api/ClothingStore/{id}", null);
         }
 
+        [Authorize(Roles = "Admin,Manager")]
         [HttpDelete("{id}")]
         public ActionResult DeleteStore([FromRoute] int id)
         {
@@ -51,6 +58,7 @@ namespace ClothingStoreAPI.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "Admin,Manager")]
         [HttpPut("{id}")]
         public ActionResult UpdateStore([FromRoute] int id, [FromBody] UpdateClothingStoreDto dto)
         {

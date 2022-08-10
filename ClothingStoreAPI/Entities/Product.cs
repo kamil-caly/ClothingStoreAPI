@@ -13,6 +13,8 @@
         public string ProductionCountry { get; set; }
         public decimal Price { get; set; }
         public int Quantity { get; set; }
+        public virtual User CreatedBy { get; set; }
+        public int? CreatedById { get; set; }
         public virtual ClothingStore Store { get; set; }
         public int StoreId { get; set; }
         public virtual List<ProductReview> ProductReviews { get; set; }

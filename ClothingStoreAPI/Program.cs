@@ -1,4 +1,5 @@
 using ClothingStoreAPI.Authentication;
+using ClothingStoreAPI.Authorization;
 using ClothingStoreAPI.Entities;
 using ClothingStoreAPI.Entities.DbContextConfigure;
 using ClothingStoreAPI.Middleware;
@@ -9,6 +10,7 @@ using ClothingStoreAPI.Services.Interfaces;
 using ClothingStoreModels.Dtos.Create;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -41,6 +43,22 @@ builder.Services.AddAuthentication(option =>
     };
 });
 
+builder.Services.AddAuthorization(option =>
+{
+    option.AddPolicy("HasNationality", builder => builder.RequireClaim("Nationality", "Poland"));
+    option.AddPolicy("AtLeast20", builder => builder.AddRequirements(new MinimumAgeRequirement(20)));
+    option.AddPolicy("CreateAtLeast2Stores", builder => builder.AddRequirements(new MinimumStoreCreated(2)));
+});
+
+// Authorization Handlers
+builder.Services.AddScoped<IAuthorizationHandler, MinimumAgeRequirementHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, MinimumStoreCreatedHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, StoreResourceOperationRequirementHandler>();
+builder.Services.AddScoped<IAuthorizationHandler, StoreReviewResourceOperationRequirementHandler>(); 
+builder.Services.AddScoped<IAuthorizationHandler, ProductResourceOperationRequirementHandler>(); 
+builder.Services.AddScoped<IAuthorizationHandler, ProductReviewResourceOperationRequirementHandler>(); 
+
+
 builder.Services.AddControllers().AddFluentValidation();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -61,6 +79,8 @@ builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
 builder.Services.AddScoped<IValidator<LoginUserDto>, LoginUserDtoValidator>();
+builder.Services.AddScoped<IUserContextService, UserContextService>();
+builder.Services.AddHttpContextAccessor();
 
 // nlog
 builder.Logging.ClearProviders();
@@ -88,6 +108,8 @@ if (app.Environment.IsDevelopment())
 app.UseMiddleware<ErrorHandlingMiddleware>();
 
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

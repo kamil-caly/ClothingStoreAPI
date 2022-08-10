@@ -3,12 +3,14 @@ using ClothingStoreAPI.Services.Interfaces;
 using ClothingStoreModels.Dtos;
 using ClothingStoreModels.Dtos.Dispaly;
 using ClothingStoreModels.Dtos.Update;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ClothingStoreAPI.Controllers
 {
     [ApiController]
     [Route("/api/ClothingStore/{storeId}/StoreReview")]
+    [Authorize]
     public class StoreReviewController : ControllerBase
     {
         private readonly IStoreReviewService reviewService;
@@ -19,6 +21,7 @@ namespace ClothingStoreAPI.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public ActionResult<IEnumerable<StoreReviewDto>> Get([FromRoute] int storeId)
         {
             var reviews = reviewService.GetAll(storeId);
@@ -27,6 +30,7 @@ namespace ClothingStoreAPI.Controllers
         }
 
         [HttpGet("{reviewId}")]
+        [AllowAnonymous]
         public ActionResult<StoreReviewDto> Get([FromRoute] int storeId, [FromRoute] int reviewId)
         {
             var review = reviewService.GetById(storeId, reviewId);
@@ -43,6 +47,7 @@ namespace ClothingStoreAPI.Controllers
         }
 
         [HttpPut("{reviewId}")]
+        [Authorize(Roles = "Manager,Admin,UserPremium")]
         public ActionResult Update([FromRoute] int storeId, [FromRoute] int reviewId, [FromBody] UpdateStoreReviewDto dto)
         {
             reviewService.Update(storeId, reviewId, dto);
@@ -51,6 +56,7 @@ namespace ClothingStoreAPI.Controllers
         }
 
         [HttpDelete]
+        [Authorize(Roles = "Manager,Admin")]
         public ActionResult DeleteReviews([FromRoute] int storeId)
         {
             reviewService.DeleteAll(storeId);

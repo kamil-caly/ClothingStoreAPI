@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ClothingStoreAPI.Authorization;
 using ClothingStoreAPI.Entities;
 using ClothingStoreAPI.Entities.DbContextConfigure;
 using ClothingStoreAPI.Exceptions;
@@ -6,6 +7,7 @@ using ClothingStoreAPI.Services.Interfaces;
 using ClothingStoreModels.Dtos;
 using ClothingStoreModels.Dtos.Dispaly;
 using ClothingStoreModels.Dtos.Update;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ClothingStoreAPI.Services
 {
@@ -15,12 +17,18 @@ namespace ClothingStoreAPI.Services
         private readonly IMapper mapper;
         private readonly ClothingStoreDbContext dbContext;
         private readonly IClothingStoreService storeService;
+        private readonly IAuthorizationService authorizationService;
+        private readonly IUserContextService userContextService;
 
-        public StoreReviewService(IMapper mapper, ClothingStoreDbContext dbContext, IClothingStoreService storeService)
+        public StoreReviewService(IMapper mapper, ClothingStoreDbContext dbContext,
+            IClothingStoreService storeService, IAuthorizationService authorizationService,
+            IUserContextService userContextService)
         {
             this.mapper = mapper;
             this.dbContext = dbContext;
             this.storeService = storeService;
+            this.authorizationService = authorizationService;
+            this.userContextService = userContextService;
         }
 
         public int Create(int storeId, CreateStoreReviewDto dto)
@@ -29,6 +37,7 @@ namespace ClothingStoreAPI.Services
 
             var ReviewEntity = mapper.Map<StoreReview>(dto);
 
+            ReviewEntity.CreatedById = userContextService.GetUserId;
             ReviewEntity.StoreId = store.Id;
             dbContext.StoreReviews.Add(ReviewEntity);
             dbContext.SaveChanges();
@@ -40,6 +49,15 @@ namespace ClothingStoreAPI.Services
         {
             var review = this.GetReviewById(reviewId, storeId);
 
+            var authorizationResult = authorizationService
+                .AuthorizeAsync(userContextService.User, review,
+                new ResourceOperationRequirement(ResourceOperation.Delete)).Result;
+
+            if (!authorizationResult.Succeeded)
+            {
+                throw new ForbidException("You don't have access to someone else's review");
+            }
+
             dbContext.StoreReviews.Remove(review);
             dbContext.SaveChanges();
         }
@@ -50,11 +68,21 @@ namespace ClothingStoreAPI.Services
 
             var reviews = dbContext
                 .StoreReviews
-                .Where(r => r.StoreId == store.Id);
+                .Where(r => r.StoreId == store.Id)
+                .ToList();
 
             if (!reviews.Any())
             {
                 throw new NotFoundAnyItemException($"Cannot find any reviews for Store Id = {store.Id}");
+            }
+
+            var authorizationResult = authorizationService
+                .AuthorizeAsync(userContextService.User, reviews,
+                new ResourceOperationRequirement(ResourceOperation.Delete)).Result;
+
+            if (!authorizationResult.Succeeded)
+            {
+                throw new ForbidException("You don't have access to someone else's review");
             }
 
             dbContext.StoreReviews.RemoveRange(reviews);
@@ -89,6 +117,15 @@ namespace ClothingStoreAPI.Services
         public void Update(int storeId, int reviewId, UpdateStoreReviewDto dto)
         {
             var review = this.GetReviewById(reviewId, storeId);
+
+            var authorizationResult = authorizationService
+                .AuthorizeAsync(userContextService.User, review,
+                new ResourceOperationRequirement(ResourceOperation.Update)).Result;
+
+            if (!authorizationResult.Succeeded)
+            {
+                throw new ForbidException("You don't have access to someone else's review");
+            }
 
             review = mapper.Map(dto, review);
             dbContext.SaveChanges();

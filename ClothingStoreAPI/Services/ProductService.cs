@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using ClothingStoreAPI.Authorization;
 using ClothingStoreAPI.Entities;
 using ClothingStoreAPI.Entities.DbContextConfigure;
 using ClothingStoreAPI.Exceptions;
@@ -6,6 +7,7 @@ using ClothingStoreAPI.Services.Interfaces;
 using ClothingStoreModels.Dtos;
 using ClothingStoreModels.Dtos.Dispaly;
 using ClothingStoreModels.Dtos.Update;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 namespace ClothingStoreAPI.Services
@@ -17,16 +19,19 @@ namespace ClothingStoreAPI.Services
         private readonly IMapper mapper;
         private readonly IClothingStoreService storeService;
         private readonly ILogger<ProductService> logger;
+        private readonly IAuthorizationService authorizationService;
+        private readonly IUserContextService userContextService;
 
-        public ProductService(ClothingStoreDbContext dbContext,
-            IMapper mapper,
-            IClothingStoreService storeService,
-            ILogger<ProductService> logger)
+        public ProductService(ClothingStoreDbContext dbContext, IMapper mapper,
+            IClothingStoreService storeService, ILogger<ProductService> logger,
+            IAuthorizationService authorizationService, IUserContextService userContextService)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
             this.storeService = storeService;
             this.logger = logger;
+            this.authorizationService = authorizationService;
+            this.userContextService = userContextService;
         }
 
         public int Create(int storeId, CreateProductDto dto)
@@ -35,6 +40,7 @@ namespace ClothingStoreAPI.Services
 
             var product = mapper.Map<Product>(dto);
 
+            product.CreatedById = userContextService.GetUserId;
             product.StoreId = store.Id;
             dbContext.Products.Add(product);
             dbContext.SaveChanges();
@@ -47,6 +53,15 @@ namespace ClothingStoreAPI.Services
             logger.LogError($"Product with id: {productId} from store with id: {storeId} DELETE ACTION invoked");
 
             var product = this.GetProductById(productId, storeId);
+
+            var authorizationResult = authorizationService
+                .AuthorizeAsync(userContextService.User, product,
+                new ResourceOperationRequirement(ResourceOperation.Delete)).Result;
+
+            if (!authorizationResult.Succeeded)
+            {
+                throw new ForbidException("You don't have access to someone else's store's product");
+            }
 
             dbContext.Products.Remove(product);
             dbContext.SaveChanges();
@@ -66,6 +81,15 @@ namespace ClothingStoreAPI.Services
             if (!products.Any())
             {
                 throw new NotFoundAnyItemException($"Cannot find any products for Store Id: {store.Id}");
+            }
+
+            var authorizationResult = authorizationService
+                .AuthorizeAsync(userContextService.User, store,
+                new ResourceOperationRequirement(ResourceOperation.Delete)).Result;
+
+            if (!authorizationResult.Succeeded)
+            {
+                throw new ForbidException("You don't have access to someone else's store's products");
             }
 
             dbContext.RemoveRange(products);
@@ -102,6 +126,15 @@ namespace ClothingStoreAPI.Services
         public void Update(int storeId, int productId, UpdateProductDto dto)
         {
             var product = this.GetProductById(productId, storeId);
+
+            var authorizationResult = authorizationService
+                .AuthorizeAsync(userContextService.User, product,
+                new ResourceOperationRequirement(ResourceOperation.Update)).Result;
+
+            if (!authorizationResult.Succeeded)
+            {
+                throw new ForbidException("You don't have access to someone else's product");
+            }
 
             product = mapper.Map(dto, product);
             dbContext.SaveChanges();
