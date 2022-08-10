@@ -26,6 +26,8 @@ namespace ClothingStoreAPI.Entities.DbContextConfigure.Configuration
             builder.Property(o => o.ProductGender)
                .IsRequired();
 
+            builder.Property(o => o.ProductQuantity)
+               .IsRequired();
         }
     }
 }

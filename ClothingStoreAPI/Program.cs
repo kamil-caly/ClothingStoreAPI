@@ -9,6 +9,7 @@ using ClothingStoreAPI.Services;
 using ClothingStoreAPI.Services.Interfaces;
 using ClothingStoreModels.Dtos;
 using ClothingStoreModels.Dtos.Create;
+using ClothingStoreModels.Dtos.Delete;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
@@ -80,9 +81,13 @@ builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<IValidator<RegisterUserDto>, RegisterUserDtoValidator>();
 builder.Services.AddScoped<IValidator<LoginUserDto>, LoginUserDtoValidator>();
+builder.Services.AddScoped<IValidator<DeleteUserDto>, DeleteUserDtoValidator>();
+builder.Services.AddScoped<IValidator<int>, AddMoneyToUserValidator>();
 builder.Services.AddScoped<IValidator<HttpQuery>, StoreQueryValidator>();
 builder.Services.AddScoped<IValidator<HttpQuery>, ProductQueryValidator>();
 builder.Services.AddScoped<IUserContextService, UserContextService>();
+builder.Services.AddScoped<IBasketService, BasketService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddHttpContextAccessor();
 
 // nlog

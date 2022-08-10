@@ -9,6 +9,7 @@
         public decimal ProductPrice { get; set; }
         public string ProductSize { get; set; }
         public string ProductGender { get; set; }
+        public int ProductQuantity { get; set; }
         public bool IsBought { get; set; }
         public virtual Basket Basket { get; set; }
         public int BasketId { get; set; }

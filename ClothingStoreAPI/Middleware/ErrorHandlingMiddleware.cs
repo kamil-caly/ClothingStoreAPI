@@ -16,7 +16,17 @@ namespace ClothingStoreAPI.Middleware
             {
                 await next.Invoke(context);
             }
-            catch(ForbidException forbidException)
+            catch (TooLittleMoneyException littleMoney)
+            {
+                context.Response.StatusCode = 204;
+                await context.Response.WriteAsync(littleMoney.Message);
+            }
+            catch (SoldOutException soldOut)
+            {
+                context.Response.StatusCode = 204;
+                await context.Response.WriteAsync(soldOut.Message);
+            }
+            catch (ForbidException forbidException)
             {
                 context.Response.StatusCode = 403;
                 await context.Response.WriteAsync(forbidException.Message);

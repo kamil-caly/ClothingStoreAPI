@@ -3,6 +3,7 @@ using ClothingStoreAPI.Entities;
 using ClothingStoreAPI.Entities.DbContextConfigure;
 using ClothingStoreAPI.Services.Interfaces;
 using ClothingStoreModels.Dtos.Create;
+using ClothingStoreModels.Dtos.Delete;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -17,13 +18,33 @@ namespace ClothingStoreAPI.Services
         private readonly ClothingStoreDbContext dbContext;
         private readonly IPasswordHasher<User> passwordHasher;
         private readonly AuthenticationSettings authenticationSettings;
+        private readonly IUserContextService userContextService;
 
         public AccountService(ClothingStoreDbContext dbContext, IPasswordHasher<User> passwordHasher,
-            AuthenticationSettings authenticationSettings)
+            AuthenticationSettings authenticationSettings, IUserContextService userContextService)
         {
             this.dbContext = dbContext;
             this.passwordHasher = passwordHasher;
             this.authenticationSettings = authenticationSettings;
+            this.userContextService = userContextService;
+        }
+
+        public void AddMoney(int money, LoginUserDto dto)
+        {
+            var user = dbContext.Users.FirstOrDefault(u => u.Id == userContextService.GetUserId);
+
+            user.Money += (decimal)money;
+            dbContext.SaveChanges();
+        }
+
+        public void DeleteUser(DeleteUserDto dto)
+        {
+            var user = dbContext
+                .Users
+                .FirstOrDefault(u => u.Email == dto.Email);
+
+            dbContext.Users.Remove(user);
+            dbContext.SaveChanges();
         }
 
         public string GenerateJwt(LoginUserDto dto)
@@ -32,7 +53,6 @@ namespace ClothingStoreAPI.Services
                 .Users
                 .Include(u => u.Role)
                 .FirstOrDefault(u => u.Email == dto.Email);
-            //var result = passwordHasher.VerifyHashedPassword(user, user.PasswordHash, dto.Password);
 
             var claims = new List<Claim>()
             {

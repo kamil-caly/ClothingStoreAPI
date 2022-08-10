@@ -46,6 +46,15 @@ namespace ClothingStoreAPI.Mappers
             CreateMap<UpdateProductDto, Product>();
             CreateMap<UpdateProductReviewDto, ProductReview>();
 
+            CreateMap<Product, CreateOrderDto>()
+                .ForMember(p => p.ProductName, c => c.MapFrom(s => s.Name))
+                .ForMember(p => p.ProductPrice, c => c.MapFrom(s => s.Price))
+                .ForMember(p => p.ProductSize, c => c.MapFrom(s => s.Size))
+                .ForMember(p => p.ProductGender, c => c.MapFrom(s => s.Gender))
+                .ForMember(p => p.ProductQuantity, c => c.MapFrom(s => s.Quantity));
+
+            // mapujemy z 1 typu na 2 <1,2> !!!
+            CreateMap<CreateOrderDto, Order>();
 
         }
     }
