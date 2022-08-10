@@ -22,9 +22,9 @@ namespace ClothingStoreAPI.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public ActionResult<IEnumerable<ProductDto>> GetAll([FromRoute] int storeId)
+        public ActionResult<IEnumerable<ProductDto>> GetAll([FromRoute] int storeId, [FromQuery]HttpQuery query)
         {
-            var products = productService.GetAll(storeId);
+            var products = productService.GetAll(storeId, query);
 
             return Ok(products);
         }

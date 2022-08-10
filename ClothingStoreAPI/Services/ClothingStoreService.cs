@@ -9,6 +9,7 @@ using ClothingStoreModels.Dtos.Dispaly;
 using ClothingStoreModels.Dtos.Update;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace ClothingStoreAPI.Services
 {
@@ -60,24 +61,50 @@ namespace ClothingStoreAPI.Services
             dbContext.SaveChanges();
         }
 
-        public IEnumerable<ClothingStoreDto> GetAll(string searchPhraze)
+        public PageResult<ClothingStoreDto> GetAll(HttpQuery query)
         {
-            var stores = dbContext
+            var baseQuery = dbContext
                 .ClothingStores
                 .Include(s => s.Address)
                 .Include(s => s.Owner)
                 .Include(s => s.StoreReviews)
                 .Include(s => s.Products)
-                .Where(s => searchPhraze != null && s.Name.ToLower().Contains(searchPhraze.ToLower()))
-                .ToList();
+                .Where(s => query.SearchPhraze == null
+                    || s.Name.ToLower().Contains(query.SearchPhraze.ToLower()));
+
+            if (!string.IsNullOrEmpty(query.SortBy))
+            {
+                var dictionary = new Dictionary<string, Expression<Func<ClothingStore, object>>>
+                {
+                    {nameof(ClothingStore.Name), s => s.Name },
+                    {nameof(ClothingStore.Description), s => s.Description },
+                    {nameof(ClothingStore.CreatedDate), s => s.CreatedDate }
+                };
+
+                var selectedColumn = dictionary[query.SortBy];
+
+                baseQuery = query.SortDirection == SortDirection.ASC ?
+                    baseQuery.OrderBy(selectedColumn)
+                    : baseQuery.OrderByDescending(selectedColumn);
+            }
+
+            var stores = baseQuery
+            .Skip(query.PageSize * (query.PageNumber - 1))
+            .Take(query.PageSize)
+            .ToList();
 
             if(stores is null)
             {
                 throw new NotFoundAnyItemException("Cannot found any clothing stores");
             }
 
-            var result = mapper.Map<List<ClothingStoreDto>>(stores);
-            return result;
+            var totalItemsCount = baseQuery.Count();
+
+            var storeDtos = mapper.Map<List<ClothingStoreDto>>(stores);
+
+            var pageResult = new PageResult<ClothingStoreDto>(storeDtos, totalItemsCount, query.PageSize, query.PageNumber);
+
+            return pageResult;
         }
 
         public ClothingStoreDto GetById(int id)

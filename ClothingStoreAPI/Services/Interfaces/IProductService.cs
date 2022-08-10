@@ -7,7 +7,7 @@ namespace ClothingStoreAPI.Services.Interfaces
 {
     public interface IProductService
     {
-        IEnumerable<ProductDto> GetAll(int storeId);
+        PageResult<ProductDto> GetAll(int storeId, HttpQuery query);
         ProductDto GetById(int storeId, int productId);
         int Create(int storeId, CreateProductDto dto);
 

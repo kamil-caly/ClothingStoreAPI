@@ -9,6 +9,7 @@ using ClothingStoreModels.Dtos.Dispaly;
 using ClothingStoreModels.Dtos.Update;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace ClothingStoreAPI.Services
 {
@@ -96,23 +97,58 @@ namespace ClothingStoreAPI.Services
             dbContext.SaveChanges();
         }
 
-        public IEnumerable<ProductDto> GetAll(int storeId)
+        public PageResult<ProductDto> GetAll(int storeId, HttpQuery query)
         {
             var store = storeService.GetStoreFromDb(storeId);
 
-            var products = dbContext
+            /*var products = dbContext
                 .Products
                 .Include(p => p.ProductReviews)
                 .Where(p => p.StoreId == store.Id)
-                .ToList();
+                .ToList();*/
+
+            var baseQuery = dbContext
+                .Products
+                .Include(p => p.ProductReviews)
+                .Where(p => p.StoreId == store.Id && (query.SearchPhraze == null
+                    || p.Name.ToLower().Contains(query.SearchPhraze.ToLower())));
+
+            if (!string.IsNullOrEmpty(query.SortBy))
+            {
+                var dictionary = new Dictionary<string, Expression<Func<Product, object>>>
+                {
+                    {nameof(Product.Name), p => p.Name },
+                    {nameof(Product.Description), p => p.Description },
+                    {nameof(Product.Price), p => p.Price },
+                    {nameof(Product.Type), p => p.Type },
+                    {nameof(Product.Gender), p => p.Gender },
+                    {nameof(Product.Size), p => p.Size }
+                };
+
+                var selectedColumn = dictionary[query.SortBy];
+
+                baseQuery = query.SortDirection == SortDirection.ASC ?
+                    baseQuery.OrderBy(selectedColumn)
+                    : baseQuery.OrderByDescending(selectedColumn);
+            }
+
+            var products = baseQuery
+            .Skip(query.PageSize * (query.PageNumber - 1))
+            .Take(query.PageSize)
+            .ToList();
 
             if (!products.Any())
             {
                 throw new NotFoundAnyItemException("Cannot find any product for this store.");
             }
 
-            var productsDtos = mapper.Map<List<ProductDto>>(products);
-            return productsDtos;
+            var totalItemsCount = baseQuery.Count();
+
+            var productDtos = mapper.Map<List<ProductDto>>(products);
+
+            var pageResult = new PageResult<ProductDto>(productDtos, totalItemsCount, query.PageSize, query.PageNumber);
+
+            return pageResult;
         }
 
         public ProductDto GetById(int storeId, int productId)

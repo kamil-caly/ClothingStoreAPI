@@ -24,9 +24,9 @@ namespace ClothingStoreAPI.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public ActionResult<IEnumerable<ClothingStoreDto>> GetAll([FromQuery] string searchPhraze)
+        public ActionResult<IEnumerable<ClothingStoreDto>> GetAll([FromQuery] HttpQuery query)
         {
-            var storeDtos = storeService.GetAll(searchPhraze);
+            var storeDtos = storeService.GetAll(query);
 
             return Ok(storeDtos);
         }
