@@ -101,12 +101,6 @@ namespace ClothingStoreAPI.Services
         {
             var store = storeService.GetStoreFromDb(storeId);
 
-            /*var products = dbContext
-                .Products
-                .Include(p => p.ProductReviews)
-                .Where(p => p.StoreId == store.Id)
-                .ToList();*/
-
             var baseQuery = dbContext
                 .Products
                 .Include(p => p.ProductReviews)

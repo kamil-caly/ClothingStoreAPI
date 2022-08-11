@@ -3,7 +3,6 @@ using ClothingStoreAPI.Entities.DbContextConfigure;
 using ClothingStoreAPI.Exceptions;
 using ClothingStoreAPI.Services.Interfaces;
 using ClothingStoreModels.Dtos.Create;
-using Microsoft.AspNetCore.Authorization;
 
 namespace ClothingStoreAPI.Services
 {
@@ -84,18 +83,19 @@ namespace ClothingStoreAPI.Services
 
             var isUserPremium = user.RoleId == 2;
 
+            var spendingPrice = isUserPremium ? order.ProductQuantity * order.ProductPrice * 0.95M
+                : order.ProductQuantity * order.ProductPrice;
+
             if (order.ProductQuantity > productInStoreQuantity
-                || isUserPremium ? userMoney < order.ProductQuantity * order.ProductPrice * 0.95M
-                : userMoney < order.ProductQuantity * order.ProductPrice)
+                || spendingPrice > userMoney)
             {
                 throw new CannotBuyProductException("Cannot buy because product quantity is less than in order" +
-                    "or you hav not enaught money.");
+                    "or you have not enaught money.");
             }
 
             order.IsBought = true;
 
-            user.Money -= isUserPremium ? order.ProductQuantity * order.ProductPrice * 0.95M
-                : order.ProductQuantity * order.ProductPrice;
+            user.Money -= spendingPrice;
 
             productInStore.Quantity -= order.ProductQuantity;
 

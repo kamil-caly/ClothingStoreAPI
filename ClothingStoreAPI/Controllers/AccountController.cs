@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ClothingStoreAPI.Controllers
 {
-    [Route("api/account")]
+    [Route("Api/Account")]
     [ApiController]
     public class AccountController : ControllerBase
     {
@@ -18,7 +18,7 @@ namespace ClothingStoreAPI.Controllers
             this.accountService = accountService;
         }
 
-        [HttpPost("register")]
+        [HttpPost("Register")]
         public ActionResult RegisterUser([FromBody] RegisterUserDto dto)
         {
             accountService.RegisterUser(dto);
@@ -26,7 +26,7 @@ namespace ClothingStoreAPI.Controllers
             return Ok("Account created.");
         }
 
-        [HttpPost("login")]
+        [HttpPost("Login")]
         public ActionResult Login([FromBody] LoginUserDto dto)
         {
             string token = accountService.GenerateJwt(dto);
@@ -34,7 +34,7 @@ namespace ClothingStoreAPI.Controllers
             return Ok(token);
         }
 
-        [HttpDelete("deleteAccount")]
+        [HttpDelete("DeleteAccount")]
         public ActionResult Delete([FromBody] DeleteUserDto dto)
         {
             accountService.DeleteUser(dto);
@@ -42,12 +42,12 @@ namespace ClothingStoreAPI.Controllers
             return NoContent();
         }
 
-        [HttpPost("addMoney")]
+        [HttpPost("AddMoney")]
         public ActionResult AddMoney([FromBody] AddUserMoney userMoneyParams)
         {
             accountService.AddMoney(userMoneyParams);
 
-            return Ok("Money successfully added to you account.");
+            return Ok("Money successfully added to your account.");
         }
 
         [Authorize(Policy = "makeUserAsPremiumAfter10Purchases")]

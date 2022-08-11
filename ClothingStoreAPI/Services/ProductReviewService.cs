@@ -83,7 +83,7 @@ namespace ClothingStoreAPI.Services
 
             if (!productReviews.Any())
             {
-                throw new NotFoundAnyItemException($"Cannot find any product review for this product Id = {product.Id}.");
+                throw new NotFoundAnyItemException($"Cannot find any product review for this product Id = {productId}.");
             }
 
             dbContext.RemoveRange(productReviews);

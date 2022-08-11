@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ClothingStoreAPI.Controllers
 {
     [ApiController]
-    [Route("api/ClothingStore/{storeId}/product")]
+    [Route("Api/ClothingStore/{storeId}/Product")]
     [Authorize]
     public class ProductController : ControllerBase
     {

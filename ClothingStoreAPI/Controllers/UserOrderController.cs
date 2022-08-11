@@ -6,7 +6,7 @@ namespace ClothingStoreAPI.Controllers
 {
     [ApiController]
     [Authorize]
-    [Route("api/Userorder")]
+    [Route("api/UserOrder")]
     public class UserOrderController : ControllerBase
     {
         private readonly IUserOrderService orderService;
@@ -16,7 +16,7 @@ namespace ClothingStoreAPI.Controllers
             this.orderService = orderService;
         }
 
-        [HttpPost("addToBasket/{storeId}/{productId}")]
+        [HttpPost("AddToBasket/{storeId}/{productId}")]
         public ActionResult AddOrderToBasket([FromRoute] int storeId, [FromRoute] int productId, [FromQuery] int quantity)
         {
             orderService.AddOrder(storeId, productId, quantity);
@@ -24,7 +24,7 @@ namespace ClothingStoreAPI.Controllers
             return Ok("Order successfully added to basket.");
         }
 
-        [HttpDelete("deleteOrder/{orderId}")]
+        [HttpDelete("DeleteOrder/{orderId}")]
         public ActionResult DeleteOrder([FromRoute] int orderId)
         {
             orderService.DeleteOrder(orderId);
@@ -32,7 +32,7 @@ namespace ClothingStoreAPI.Controllers
             return NoContent();
         }
 
-        [HttpPut("buyOrder/{orderId}")]
+        [HttpPut("BuyOrder/{orderId}")]
         public ActionResult BuyOrder([FromRoute] int orderId)
         {
             orderService.BuyOrder(orderId);
@@ -40,7 +40,7 @@ namespace ClothingStoreAPI.Controllers
             return Ok("Product bought.");
         }
 
-        [HttpPut("updateQuantity/{orderId}")]
+        [HttpPut("UpdateQuantity/{orderId}")]
         public ActionResult UpdateOrder([FromRoute] int orderId, [FromQuery] int quantity)
         {
             orderService.UpdateOrderQuantity(orderId, quantity);

@@ -114,7 +114,5 @@ namespace ClothingStoreAPI.Services
             dbContext.Users.Add(newUser);
             dbContext.SaveChanges();
         }
-
-        
     }
 }

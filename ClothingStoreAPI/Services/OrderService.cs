@@ -24,6 +24,8 @@ namespace ClothingStoreAPI.Services
 
         public void DeleteAllOrders(int basketId)
         {
+            logger.LogError($"Orders with basket id: {basketId} DELETE ACTION invoked");
+
             var basket = basketService.GetBasket(basketId);
 
             var orders = dbContext
@@ -42,6 +44,8 @@ namespace ClothingStoreAPI.Services
 
         public void DeleteOrder(int basketId, int orderId)
         {
+            logger.LogError($"Order with id: {orderId}, basket id: {basketId} DELETE ACTION invoked");
+
             var basket = basketService.GetBasket(basketId);
 
             var order = dbContext

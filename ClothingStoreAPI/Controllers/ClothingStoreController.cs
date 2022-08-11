@@ -1,16 +1,13 @@
-﻿using ClothingStoreAPI.Entities;
-using ClothingStoreAPI.Services;
-using ClothingStoreAPI.Services.Interfaces;
+﻿using ClothingStoreAPI.Services.Interfaces;
 using ClothingStoreModels.Dtos;
 using ClothingStoreModels.Dtos.Dispaly;
 using ClothingStoreModels.Dtos.Update;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace ClothingStoreAPI.Controllers
 {
-    [Route("api/ClothingStore")]
+    [Route("Api/ClothingStore")]
     [ApiController]
     [Authorize]
     public class ClothingStoreController : ControllerBase
@@ -46,7 +43,7 @@ namespace ClothingStoreAPI.Controllers
         {
             var id = storeService.Create(dto);
 
-            return Created($"/api/ClothingStore/{id}", null);
+            return Created($"/Api/ClothingStore/{id}", null);
         }
 
         [Authorize(Roles = "Admin,Manager")]

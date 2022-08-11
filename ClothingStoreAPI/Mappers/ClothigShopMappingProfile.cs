@@ -57,7 +57,6 @@ namespace ClothingStoreAPI.Mappers
             CreateMap<CreateOrderDto, Order>();
             CreateMap<Order, OrderDto>();
             CreateMap<Basket, BasketDto>();
-
         }
     }
 }

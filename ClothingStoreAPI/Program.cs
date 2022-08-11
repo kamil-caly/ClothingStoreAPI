@@ -100,6 +100,7 @@ builder.Logging.SetMinimumLevel(LogLevel.Trace);
 builder.Host.UseNLog();
 
 builder.Services.AddScoped<ErrorHandlingMiddleware>();
+builder.Services.AddScoped<ErrorHandlingBuyingMiddleware>();
 
 var app = builder.Build();
 
@@ -118,6 +119,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseMiddleware<ErrorHandlingMiddleware>();
+app.UseMiddleware<ErrorHandlingBuyingMiddleware>();
 
 app.UseHttpsRedirection();
 

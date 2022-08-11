@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ClothingStoreAPI.Controllers
 {
     [ApiController]
-    [Route("api/ClothingStore/{storeId}/product/{productId}/productReview")]
+    [Route("Api/ClothingStore/{storeId}/Product/{productId}/ProductReview")]
     [Authorize]
     public class ProductReviewController : ControllerBase
     {
@@ -43,7 +43,7 @@ namespace ClothingStoreAPI.Controllers
         {
             int newProductReviewId = productReviewService.Create(storeId, productId, dto);
 
-            return Created($"api/ClothingStore/{storeId}/product/{productId}/productReview{newProductReviewId}", null);
+            return Created($"Api/ClothingStore/{storeId}/Product/{productId}/ProductReview{newProductReviewId}", null);
         }
 
         [HttpPut("{productReviewId}")]

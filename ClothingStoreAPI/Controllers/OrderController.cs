@@ -7,7 +7,7 @@ namespace ClothingStoreAPI.Controllers
 {
     [ApiController]
     [Authorize(Roles = "Admin,Manager")]
-    [Route("api/Order/{basketId}")]
+    [Route("Api/Order/{basketId}")]
     public class OrderController : ControllerBase
     {
         private readonly IOrderService orderService;

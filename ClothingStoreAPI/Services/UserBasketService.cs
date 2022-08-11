@@ -5,7 +5,6 @@ using ClothingStoreAPI.Exceptions;
 using ClothingStoreAPI.Services.Interfaces;
 using ClothingStoreModels.Dtos.Create;
 using ClothingStoreModels.Dtos.Dispaly;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 namespace ClothingStoreAPI.Services
@@ -16,17 +15,14 @@ namespace ClothingStoreAPI.Services
         private readonly IMapper mapper;
         private readonly ILogger<ClothingStoreService> logger;
         private readonly IUserContextService userContextService;
-        private readonly IProductService productService;
 
         public UserBasketService(ClothingStoreDbContext dbContext, IMapper mapper,
-            ILogger<ClothingStoreService> logger, IUserContextService userContextService,
-            IProductService productService)
+            ILogger<ClothingStoreService> logger, IUserContextService userContextService)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
             this.logger = logger;
             this.userContextService = userContextService;
-            this.productService = productService;
         }
 
         public void AddToBasket(CreateOrderDto dto, int productId)

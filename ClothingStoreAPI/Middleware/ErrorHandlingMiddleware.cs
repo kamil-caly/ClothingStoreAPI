@@ -26,21 +26,6 @@ namespace ClothingStoreAPI.Middleware
                 context.Response.StatusCode = 405;
                 await context.Response.WriteAsync(wrongParameter.Message);
             }
-            catch (CannotBuyProductException cannotBuy)
-            {
-                context.Response.StatusCode = 405; 
-                await context.Response.WriteAsync(cannotBuy.Message);
-            }
-            catch (TooLittleMoneyException littleMoney)
-            {
-                context.Response.StatusCode = 405;
-                await context.Response.WriteAsync(littleMoney.Message);
-            }
-            catch (SoldOutException soldOut)
-            {
-                context.Response.StatusCode = 405;
-                await context.Response.WriteAsync(soldOut.Message);
-            }
             catch (ForbidException forbidException)
             {
                 context.Response.StatusCode = 403;

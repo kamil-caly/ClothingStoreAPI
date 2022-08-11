@@ -1,5 +1,4 @@
-﻿using ClothingStoreAPI.Entities;
-using ClothingStoreAPI.Services.Interfaces;
+﻿using ClothingStoreAPI.Services.Interfaces;
 using ClothingStoreModels.Dtos.Dispaly;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -8,7 +7,7 @@ namespace ClothingStoreAPI.Controllers
 {
     [ApiController]
     [Authorize(Roles = "Admin,Manager")]
-    [Route("api/Basket")]
+    [Route("Api/Basket")]
     public class BasketController : ControllerBase
     {
         private readonly IBasketService basketService;
