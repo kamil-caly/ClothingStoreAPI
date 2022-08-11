@@ -21,7 +21,7 @@ namespace ClothingStoreAPI.Controllers
         {
             orderService.AddOrder(storeId, productId, quantity);
 
-            return Ok();
+            return Ok("Order successfully added to basket.");
         }
 
         [HttpDelete("deleteOrder/{orderId}")]
@@ -37,7 +37,7 @@ namespace ClothingStoreAPI.Controllers
         {
             orderService.BuyOrder(orderId);
 
-            return Ok();
+            return Ok("Product bought.");
         }
     }
 }

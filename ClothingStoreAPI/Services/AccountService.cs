@@ -1,6 +1,7 @@
 ﻿using ClothingStoreAPI.Authentication;
 using ClothingStoreAPI.Entities;
 using ClothingStoreAPI.Entities.DbContextConfigure;
+using ClothingStoreAPI.Exceptions;
 using ClothingStoreAPI.Services.Interfaces;
 using ClothingStoreModels.Dtos;
 using ClothingStoreModels.Dtos.Create;
@@ -80,6 +81,19 @@ namespace ClothingStoreAPI.Services
 
             var tokenHandler = new JwtSecurityTokenHandler();
             return tokenHandler.WriteToken(token);
+        }
+
+        public void MakePremium(LoginUserDto dto)
+        {
+            var user = dbContext.Users.FirstOrDefault(u => u.Id == userContextService.GetUserId);
+
+            if (user.RoleId == 2)
+            {
+                throw new OperationCannotPerformedException("You already have premium.");
+            }
+
+            user.RoleId = 2;
+            dbContext.SaveChanges();
         }
 
         public void RegisterUser(RegisterUserDto dto)

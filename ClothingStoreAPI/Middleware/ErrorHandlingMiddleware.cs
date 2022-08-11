@@ -16,19 +16,29 @@ namespace ClothingStoreAPI.Middleware
             {
                 await next.Invoke(context);
             }
+            catch (OperationCannotPerformedException operationException)
+            {
+                context.Response.StatusCode = 405;
+                await context.Response.WriteAsync(operationException.Message);
+            }
+            catch (WrongParameterException wrongParameter)
+            {
+                context.Response.StatusCode = 405;
+                await context.Response.WriteAsync(wrongParameter.Message);
+            }
             catch (CannotBuyProductException cannotBuy)
             {
-                context.Response.StatusCode = 406; //niedozwolony zasob
+                context.Response.StatusCode = 405; //niedozwolony zasob
                 await context.Response.WriteAsync(cannotBuy.Message);
             }
             catch (TooLittleMoneyException littleMoney)
             {
-                context.Response.StatusCode = 204;
+                context.Response.StatusCode = 405;
                 await context.Response.WriteAsync(littleMoney.Message);
             }
             catch (SoldOutException soldOut)
             {
-                context.Response.StatusCode = 204;
+                context.Response.StatusCode = 405;
                 await context.Response.WriteAsync(soldOut.Message);
             }
             catch (ForbidException forbidException)

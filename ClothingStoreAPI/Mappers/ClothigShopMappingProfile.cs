@@ -55,6 +55,8 @@ namespace ClothingStoreAPI.Mappers
 
             // mapujemy z 1 typu na 2 <1,2> !!!
             CreateMap<CreateOrderDto, Order>();
+            CreateMap<Order, OrderDto>();
+            CreateMap<Basket, BasketDto>();
 
         }
     }

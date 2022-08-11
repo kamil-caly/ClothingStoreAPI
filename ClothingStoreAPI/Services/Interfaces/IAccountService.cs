@@ -11,5 +11,6 @@ namespace ClothingStoreAPI.Services.Interfaces
         void DeleteUser(DeleteUserDto dto);
 
         void AddMoney(AddUserMoney userMoneyParams);
+        void MakePremium(LoginUserDto dto);
     }
 }

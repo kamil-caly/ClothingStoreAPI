@@ -48,8 +48,9 @@ builder.Services.AddAuthentication(option =>
 builder.Services.AddAuthorization(option =>
 {
     option.AddPolicy("HasNationality", builder => builder.RequireClaim("Nationality", "Poland"));
-    option.AddPolicy("AtLeast20", builder => builder.AddRequirements(new MinimumAgeRequirement(20)));
+    option.AddPolicy("AtLeast20", builder => builder.AddRequirements(new MinimumAgeRequirement(16)));
     option.AddPolicy("CreateAtLeast2Stores", builder => builder.AddRequirements(new MinimumStoreCreated(2)));
+    option.AddPolicy("makeUserAsPremiumAfter10Purchases", builder => builder.AddRequirements(new MinimumPurchasesToBePremium(10)));
 });
 
 // Authorization Handlers
@@ -59,6 +60,7 @@ builder.Services.AddScoped<IAuthorizationHandler, StoreResourceOperationRequirem
 builder.Services.AddScoped<IAuthorizationHandler, StoreReviewResourceOperationRequirementHandler>(); 
 builder.Services.AddScoped<IAuthorizationHandler, ProductResourceOperationRequirementHandler>(); 
 builder.Services.AddScoped<IAuthorizationHandler, ProductReviewResourceOperationRequirementHandler>(); 
+builder.Services.AddScoped<IAuthorizationHandler, MinimumPurchasesToBePremiumHandler>(); 
 
 
 builder.Services.AddControllers().AddFluentValidation();

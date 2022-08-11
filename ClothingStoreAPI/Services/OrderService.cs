@@ -12,20 +12,17 @@ namespace ClothingStoreAPI.Services
         private readonly ClothingStoreDbContext dbContext;
         private readonly IMapper mapper;
         private readonly ILogger<ClothingStoreService> logger;
-        private readonly IAuthorizationService authorizationService;
         private readonly IUserContextService userContextService;
         private readonly IProductService productService;
         private readonly IBasketService basketService;
 
         public OrderService(ClothingStoreDbContext dbContext, IMapper mapper,
-            ILogger<ClothingStoreService> logger, IAuthorizationService authorizationService,
-            IUserContextService userContextService, IProductService productService,
-            IBasketService basketService)
+            ILogger<ClothingStoreService> logger, IUserContextService userContextService, 
+            IProductService productService, IBasketService basketService)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
             this.logger = logger;
-            this.authorizationService = authorizationService;
             this.userContextService = userContextService;
             this.productService = productService;
             this.basketService = basketService;
@@ -33,6 +30,11 @@ namespace ClothingStoreAPI.Services
 
         public void AddOrder(int storeId, int productId, int quantity)
         {
+            if (quantity <= 0)
+            {
+                throw new WrongParameterException("Quantity must be greater than 0.");
+            }
+
             var product = productService.GetProductById(productId, storeId);
 
             if (product.Quantity - quantity <= 0)
@@ -48,7 +50,7 @@ namespace ClothingStoreAPI.Services
 
         public void BuyOrder(int orderId)
         {
-            var basket = basketService.GetExistingUserBasket();
+            var basket = basketService.GetExistingUserBasketForOrderService();
 
             var order = dbContext
                 .Orders
@@ -95,7 +97,7 @@ namespace ClothingStoreAPI.Services
 
         public void DeleteOrder(int orderId)
         {
-            var basket = basketService.GetExistingUserBasket();
+            var basket = basketService.GetExistingUserBasketForOrderService();
 
             var order = dbContext
                 .Orders
@@ -106,6 +108,8 @@ namespace ClothingStoreAPI.Services
             {
                 throw new NotFoundException("Order not found");
             }
+
+            logger.LogError($"Basket with id: {order.Id} DELETE ACTION invoked");
 
             dbContext.Orders.Remove(order);
             dbContext.SaveChanges();

@@ -2,6 +2,7 @@
 using ClothingStoreModels.Dtos;
 using ClothingStoreModels.Dtos.Create;
 using ClothingStoreModels.Dtos.Delete;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ClothingStoreAPI.Controllers
@@ -22,7 +23,7 @@ namespace ClothingStoreAPI.Controllers
         {
             accountService.RegisterUser(dto);
             
-            return Ok();
+            return Ok("Account created.");
         }
 
         [HttpPost("login")]
@@ -46,7 +47,16 @@ namespace ClothingStoreAPI.Controllers
         {
             accountService.AddMoney(userMoneyParams);
 
-            return Ok();
+            return Ok("Money successfully added to you account.");
+        }
+
+        [Authorize(Policy = "makeUserAsPremiumAfter10Purchases")]
+        [HttpPut("makeUserPremiumIf10Purchases")]
+        public ActionResult MakePremium([FromBody] LoginUserDto dto)
+        {
+            accountService.MakePremium(dto);
+
+            return Ok("You are premium now!");
         }
     }
 }
