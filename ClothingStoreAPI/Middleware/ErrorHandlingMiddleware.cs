@@ -28,7 +28,7 @@ namespace ClothingStoreAPI.Middleware
             }
             catch (CannotBuyProductException cannotBuy)
             {
-                context.Response.StatusCode = 405; //niedozwolony zasob
+                context.Response.StatusCode = 405; 
                 await context.Response.WriteAsync(cannotBuy.Message);
             }
             catch (TooLittleMoneyException littleMoney)

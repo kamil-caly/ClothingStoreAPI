@@ -1,4 +1,5 @@
-﻿using ClothingStoreAPI.Services.Interfaces;
+﻿using ClothingStoreAPI.Entities;
+using ClothingStoreAPI.Services.Interfaces;
 using ClothingStoreModels.Dtos.Dispaly;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -6,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace ClothingStoreAPI.Controllers
 {
     [ApiController]
-    [Authorize]
+    [Authorize(Roles = "Admin,Manager")]
     [Route("api/Basket")]
     public class BasketController : ControllerBase
     {
@@ -17,26 +18,34 @@ namespace ClothingStoreAPI.Controllers
             this.basketService = basketService;
         }
 
-        [HttpPost("Create")]
-        public ActionResult Create()
+        [HttpGet]
+        public ActionResult<IEnumerable<BasketDto>> Get()
         {
-            int basketId = basketService.CreateBasket();
+            var basketsDto = basketService.GetAll();
 
-            return Created("$api/Basket/Create/{basketId}", null);
+            return Ok(basketsDto);
         }
 
-        [HttpGet("Get")]
-        public ActionResult<BasketDto> Get()
+        [HttpGet("{basketId}")]
+        public ActionResult<BasketDto> Get([FromRoute] int basketId)
         {
-            BasketDto basketDto = basketService.GetBasketDto();
+            var basketDto = basketService.Get(basketId);
 
             return Ok(basketDto);
         }
 
-        [HttpDelete("Delete")]
-        public ActionResult Delete()
+        [HttpDelete]
+        public ActionResult DeleteBaskets()
         {
-            basketService.DeleteBasket();
+            basketService.DeleteAll();
+
+            return NoContent(); 
+        }
+
+        [HttpDelete("{basketId}")]
+        public ActionResult DeleteBaskets([FromRoute] int basketId)
+        {
+            basketService.Delete(basketId);
 
             return NoContent();
         }

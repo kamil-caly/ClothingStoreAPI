@@ -1,9 +1,12 @@
-﻿namespace ClothingStoreAPI.Services.Interfaces
+﻿using ClothingStoreModels.Dtos.Dispaly;
+
+namespace ClothingStoreAPI.Services.Interfaces
 {
     public interface IOrderService
     {
-        void AddOrder(int storeId, int productId, int quantity);
-        void DeleteOrder(int orderId);
-        void BuyOrder(int orderId);
+        IEnumerable<OrderDto> GetAll(int basketId);
+        OrderDto GetOrder(int basketId, int orderId);
+        void DeleteAllOrders(int basketId);
+        void DeleteOrder(int basketId, int orderId);
     }
 }

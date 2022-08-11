@@ -1,12 +1,13 @@
 ﻿using ClothingStoreAPI.Services.Interfaces;
+using ClothingStoreModels.Dtos.Dispaly;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ClothingStoreAPI.Controllers
 {
     [ApiController]
-    [Authorize]
-    [Route("api/order")]
+    [Authorize(Roles = "Admin,Manager")]
+    [Route("api/Order/{basketId}")]
     public class OrderController : ControllerBase
     {
         private readonly IOrderService orderService;
@@ -16,28 +17,36 @@ namespace ClothingStoreAPI.Controllers
             this.orderService = orderService;
         }
 
-        [HttpPost("addToBasket/{storeId}/{productId}")]
-        public ActionResult AddOrderToBasket([FromRoute] int storeId, [FromRoute] int productId, [FromQuery] int quantity)
+        [HttpGet]
+        public ActionResult<IEnumerable<OrderDto>> Get([FromRoute] int basketId)
         {
-            orderService.AddOrder(storeId, productId, quantity);
+            var orderDtos = orderService.GetAll(basketId);
 
-            return Ok("Order successfully added to basket.");
+            return Ok(orderDtos);
         }
 
-        [HttpDelete("deleteOrder/{orderId}")]
-        public ActionResult DeleteOrder([FromRoute] int orderId)
+        [HttpGet("{orderId}")]
+        public ActionResult<OrderDto> Get([FromRoute] int basketId, [FromRoute] int orderId)
         {
-            orderService.DeleteOrder(orderId);
+            var orderDto = orderService.GetOrder(basketId, orderId);
+
+            return Ok(orderDto);
+        }
+
+        [HttpDelete]
+        public ActionResult DeleteAll([FromRoute] int basketId)
+        {
+            orderService.DeleteAllOrders(basketId);
 
             return NoContent();
         }
 
-        [HttpPut("buyOrder/{orderId}")]
-        public ActionResult BuyOrder([FromRoute] int orderId)
+        [HttpDelete("{orderId}")]
+        public ActionResult Delete([FromRoute] int basketId, [FromRoute] int orderId)
         {
-            orderService.BuyOrder(orderId);
+            orderService.DeleteOrder(basketId, orderId);
 
-            return Ok("Product bought.");
+            return NoContent();
         }
     }
 }

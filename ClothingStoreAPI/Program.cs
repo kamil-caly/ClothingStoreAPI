@@ -88,6 +88,8 @@ builder.Services.AddScoped<IValidator<AddUserMoney>, AddMoneyToUserValidator>();
 builder.Services.AddScoped<IValidator<HttpQuery>, StoreQueryValidator>();
 builder.Services.AddScoped<IValidator<HttpQuery>, ProductQueryValidator>();
 builder.Services.AddScoped<IUserContextService, UserContextService>();
+builder.Services.AddScoped<IUserBasketService, UserBasketService>();
+builder.Services.AddScoped<IUserOrderService, UserOrderService>();
 builder.Services.AddScoped<IBasketService, BasketService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddHttpContextAccessor();

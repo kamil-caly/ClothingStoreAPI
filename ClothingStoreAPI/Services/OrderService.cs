@@ -2,8 +2,7 @@
 using ClothingStoreAPI.Entities.DbContextConfigure;
 using ClothingStoreAPI.Exceptions;
 using ClothingStoreAPI.Services.Interfaces;
-using ClothingStoreModels.Dtos.Create;
-using Microsoft.AspNetCore.Authorization;
+using ClothingStoreModels.Dtos.Dispaly;
 
 namespace ClothingStoreAPI.Services
 {
@@ -11,93 +10,39 @@ namespace ClothingStoreAPI.Services
     {
         private readonly ClothingStoreDbContext dbContext;
         private readonly IMapper mapper;
-        private readonly ILogger<ClothingStoreService> logger;
-        private readonly IUserContextService userContextService;
-        private readonly IProductService productService;
+        private readonly ILogger<OrderService> logger;
         private readonly IBasketService basketService;
 
         public OrderService(ClothingStoreDbContext dbContext, IMapper mapper,
-            ILogger<ClothingStoreService> logger, IUserContextService userContextService, 
-            IProductService productService, IBasketService basketService)
+            ILogger<OrderService> logger, IBasketService basketService)
         {
             this.dbContext = dbContext;
             this.mapper = mapper;
             this.logger = logger;
-            this.userContextService = userContextService;
-            this.productService = productService;
             this.basketService = basketService;
         }
 
-        public void AddOrder(int storeId, int productId, int quantity)
+        public void DeleteAllOrders(int basketId)
         {
-            if (quantity <= 0)
-            {
-                throw new WrongParameterException("Quantity must be greater than 0.");
-            }
+            var basket = basketService.GetBasket(basketId);
 
-            var product = productService.GetProductById(productId, storeId);
-
-            if (product.Quantity - quantity <= 0)
-            {
-                throw new SoldOutException("Product sold out, change quantity or pick other one.");
-            }
-
-            var orderDto = mapper.Map<CreateOrderDto>(product);
-            orderDto.ProductQuantity = quantity;
-
-            basketService.AddToBasket(orderDto, product.Id);
-        }
-
-        public void BuyOrder(int orderId)
-        {
-            var basket = basketService.GetExistingUserBasketForOrderService();
-
-            var order = dbContext
+            var orders = dbContext
                 .Orders
                 .Where(o => o.BasketId == basket.Id)
-                .FirstOrDefault(o => o.Id == orderId);
+                .ToList();
 
-            if (order is null)
+            if (orders is null)
             {
-                throw new NotFoundException("Order not found");
+                throw new NotFoundAnyItemException($"Not found any orders for basket with Id: {basketId}");
             }
 
-            if (order.IsBought == true)
-            {
-                throw new CannotBuyProductException("The order has already been completed.");
-            }
-
-            var productInStore = dbContext
-                .Products
-                .FirstOrDefault(p => p.Id == order.ProductId);
-
-            if (productInStore is null)
-            {
-                throw new NotFoundException("Product in Clothing store not found");
-            }
-
-            var productInStoreQuantity = productInStore.Quantity;
-
-            var user = dbContext.Users.FirstOrDefault(u => u.Id == userContextService.GetUserId);
-
-            var userMoney = user.Money;
-
-            if (order.ProductQuantity > productInStoreQuantity
-                || userMoney < order.ProductQuantity * order.ProductPrice)
-            {
-                throw new CannotBuyProductException("Cannot buy because product quantity is less than in order" +
-                    "or you hav not enaught money.");
-            }
-
-            order.IsBought = true;
-            user.Money -= order.ProductQuantity * order.ProductPrice;
-            productInStore.Quantity -= order.ProductQuantity;
+            dbContext.Orders.RemoveRange(orders);
             dbContext.SaveChanges();
         }
 
-        public void DeleteOrder(int orderId)
+        public void DeleteOrder(int basketId, int orderId)
         {
-            var basket = basketService.GetExistingUserBasketForOrderService();
+            var basket = basketService.GetBasket(basketId);
 
             var order = dbContext
                 .Orders
@@ -106,13 +51,49 @@ namespace ClothingStoreAPI.Services
 
             if (order is null)
             {
-                throw new NotFoundException("Order not found");
+                throw new NotFoundException($"Not found order for Id: {orderId}");
             }
-
-            logger.LogError($"Basket with id: {order.Id} DELETE ACTION invoked");
 
             dbContext.Orders.Remove(order);
             dbContext.SaveChanges();
+        }
+
+        public IEnumerable<OrderDto> GetAll(int basketId)
+        {
+            var basket = basketService.GetBasket(basketId);
+
+            var orders = dbContext
+                .Orders
+                .Where(o => o.BasketId == basket.Id)
+                .ToList();
+
+            if (orders is null)
+            {
+                throw new NotFoundAnyItemException($"Not found any orders for basket with Id: {basketId}");
+            }
+
+            var orderDtos = mapper.Map<IEnumerable<OrderDto>>(orders);
+
+            return orderDtos;
+        }
+
+        public OrderDto GetOrder(int basketId, int orderId)
+        {
+            var basket = basketService.GetBasket(basketId);
+
+            var order = dbContext
+                .Orders
+                .Where(o => o.BasketId == basket.Id)
+                .FirstOrDefault(o => o.Id == orderId);
+
+            if (order is null)
+            {
+                throw new NotFoundException($"Not found order for Id: {orderId}");
+            }
+
+            var orderDto = mapper.Map<OrderDto>(order);
+
+            return orderDto;
         }
     }
 }
