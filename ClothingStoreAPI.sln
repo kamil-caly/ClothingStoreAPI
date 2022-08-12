@@ -5,7 +5,9 @@ VisualStudioVersion = 17.2.32630.192
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClothingStoreAPI", "ClothingStoreAPI\ClothingStoreAPI.csproj", "{AE6F2AAA-2172-48DA-B101-7465CF0F8F05}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClothingStoreModels", "ClothingStoreModels\ClothingStoreModels.csproj", "{7171EEF6-7CE1-4A42-A8E8-52462079FE06}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClothingStoreModels", "ClothingStoreModels\ClothingStoreModels.csproj", "{7171EEF6-7CE1-4A42-A8E8-52462079FE06}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClothingStoreAPI.IntegrationTests", "ClothingStoreAPI.IntegrationTests\ClothingStoreAPI.IntegrationTests.csproj", "{144D4203-0311-419A-9897-13783B3883A4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{7171EEF6-7CE1-4A42-A8E8-52462079FE06}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7171EEF6-7CE1-4A42-A8E8-52462079FE06}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7171EEF6-7CE1-4A42-A8E8-52462079FE06}.Release|Any CPU.Build.0 = Release|Any CPU
+		{144D4203-0311-419A-9897-13783B3883A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{144D4203-0311-419A-9897-13783B3883A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{144D4203-0311-419A-9897-13783B3883A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{144D4203-0311-419A-9897-13783B3883A4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
