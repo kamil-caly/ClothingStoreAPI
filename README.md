@@ -13,3 +13,4 @@ Technologies used in this project:
 - Logger
 - AutoMapper
 - FluentValidation
+- xUnit Test
